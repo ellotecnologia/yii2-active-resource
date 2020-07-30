@@ -1,18 +1,18 @@
 {
-    "name": "chsergey/yii2-rest-client",
+    "name": zaioll/yii2-active-resource",
     "version": "0.1.1",
-    "description": "REST client (AR-like model) for Yii Framework 2.0 (via GuzzleHttp)",
+    "description": "REST client (AR-like model) for Yii Framework 2.0",
     "keywords": ["yii2", "rest", "client", "model", "active record"],
     "license": "MIT",
     "authors": [
         {
-            "name": "chsergey",
-            "email": "chsergey@chsergey.ru"
+            "name": "zaioll",
+            "email": "zaioll@protonmail.com"
         }
     ],
     "support": {
-        "source": "https://github.com/chsergey/yii2-rest-client",
-        "issues": "https://github.com/chsergey/yii2-rest-client/issues"
+        "source": "https://github.com/zaioll/yii2-active-resource",
+        "issues": "https://github.com/zaioll/yii2-active-resource/issues"
     },
     "minimum-stability": "beta",
     "require": {
@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "chsergey\\rest\\": "src/"
+            "Zaioll\\ActiveResource\\": "src/"
         }
     }
 }
