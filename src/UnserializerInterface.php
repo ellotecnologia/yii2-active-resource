@@ -1,11 +1,11 @@
 <?php
 
-namespace chsergey\rest;
+namespace Zaioll\ActiveResource;
 
 /**
  * Interface UnserializerInterface
  * 
- * @package chsergey\rest
+ * @package Zaioll\ActiveResource
  */
 interface UnserializerInterface {
 

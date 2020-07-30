@@ -1,13 +1,13 @@
 <?php
 
-namespace chsergey\rest;
+namespace Zaioll\ActiveResource;
 
 use yii\base\Component;
 
 /**
  * Class Unserializer
  * 
- * @package chsergey\rest
+ * @package Zaioll\ActiveResource
  */
 abstract class Unserializer extends Component implements UnserializerInterface {
 
