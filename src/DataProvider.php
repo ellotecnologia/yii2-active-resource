@@ -4,6 +4,7 @@ namespace Zaioll\ActiveResource;
 
 use yii\base\InvalidConfigException;
 use yii\data\BaseDataProvider;
+use Zaioll\ActiveResource\QueryInterface;
 
 /**
  * Class DataProvider
