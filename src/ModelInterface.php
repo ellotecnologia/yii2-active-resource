@@ -1,13 +1,13 @@
 <?php
 
-namespace chsergey\rest;
+namespace Zaioll\ActiveResource;
 
 use yii\base\InvalidConfigException;
 
 /**
  * Interface ModelInterface
  * 
- * @package chsergey\rest
+ * @package Zaioll\ActiveResource
  */
 interface ModelInterface {
 	/**

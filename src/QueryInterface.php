@@ -1,12 +1,12 @@
 <?php
 
-namespace chsergey\rest;
+namespace Zaioll\ActiveResource;
 
 /**
  * Interface QueryInterface
  * Query to REST interface
  * 
- * @package chsergey\rest
+ * @package Zaioll\ActiveResource
  */
 interface QueryInterface {
 	/**

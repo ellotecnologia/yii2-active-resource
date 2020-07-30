@@ -1,11 +1,11 @@
 <?php
 
-namespace chsergey\rest;
+namespace Zaioll\ActiveResource;
 
 /**
  * Class Model
  * 
- * @package chsergey\rest
+ * @package Zaioll\ActiveResource
  */
 abstract class Model extends \yii\base\Model implements ModelInterface {
 	/**

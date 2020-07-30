@@ -1,6 +1,6 @@
 <?php
 
-namespace chsergey\rest;
+namespace Zaioll\ActiveResource;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
@@ -17,7 +17,7 @@ use yii\web\ServerErrorHttpException;
  * Class Query
  * HTTP transport by GuzzleHTTP
  *
- * @package chsergey\rest
+ * @package Zaioll\ActiveResource
  */
 class Query extends Component implements QueryInterface {
 	/**
@@ -49,7 +49,7 @@ class Query extends Component implements QueryInterface {
 	 */
 	public $unserializers = [
 		self::JSON_TYPE => [
-			'class' => 'chsergey\rest\JsonUnserializer'
+			'class' => 'Zaioll\ActiveResource\JsonUnserializer'
 		]
 	];
 	/**
@@ -74,31 +74,31 @@ class Query extends Component implements QueryInterface {
 	public $selectFieldsKey = 'fields';
 	/**
 	 * Request LIMIT param name
-	 * @see chsergey\rest\Model::$limitKey
+	 * @see Zaioll\ActiveResource\Model::$limitKey
 	 * @var string
 	 */
 	public $limitKey;
 	/**
 	 * Request OFFSET param name
-	 * @see chsergey\rest\Model::$offsetKey
+	 * @see Zaioll\ActiveResource\Model::$offsetKey
 	 * @var string
 	 */
 	public $offsetKey;
 	/**
 	 * Model class envelope
-	 * @see chsergey\rest\Model::$collectionEnvelope
+	 * @see Zaioll\ActiveResource\Model::$collectionEnvelope
 	 * @var string
 	 */
 	protected $_collectionEnvelope;
 	/**
 	 * Model class pagination envelope
-	 * @see chsergey\rest\Model::$paginationEnvelope
+	 * @see Zaioll\ActiveResource\Model::$paginationEnvelope
 	 * @var string
 	 */
 	protected $_paginationEnvelope;
 	/**
 	 * Model class pagination envelope keys mapping
-	 * @see chsergey\rest\Model::$paginationEnvelopeKeys
+	 * @see Zaioll\ActiveResource\Model::$paginationEnvelopeKeys
 	 * @var array
 	 */
 	private $_paginationEnvelopeKeys;

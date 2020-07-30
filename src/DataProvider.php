@@ -1,6 +1,6 @@
 <?php
 
-namespace chsergey\rest;
+namespace Zaioll\ActiveResource;
 
 use yii\base\InvalidConfigException;
 use yii\data\BaseDataProvider;
@@ -8,7 +8,7 @@ use yii\data\BaseDataProvider;
 /**
  * Class DataProvider
  *
- * @package chsergey\rest
+ * @package Zaioll\ActiveResource
  */
 class DataProvider extends BaseDataProvider {
 	/**
@@ -26,7 +26,7 @@ class DataProvider extends BaseDataProvider {
 		if(!$this->query instanceof QueryInterface) {
 			throw new InvalidConfigException(
 				'The "query" property must be an instance of a class that implements the '.
-				'chsergey\rest\QueryInterface or its subclasses.'
+				'Zaioll\ActiveResource\QueryInterface or its subclasses.'
 			);
 		}
 

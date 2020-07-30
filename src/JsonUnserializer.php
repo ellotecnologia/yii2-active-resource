@@ -1,13 +1,13 @@
 <?php
 
-namespace chsergey\rest;
+namespace Zaioll\ActiveResource;
 
 use yii\helpers\Json;
 
 /**
  * Class JsonUnserializer
  * 
- * @package chsergey\rest
+ * @package Zaioll\ActiveResource
  */
 class JsonUnserializer extends Unserializer {
 
