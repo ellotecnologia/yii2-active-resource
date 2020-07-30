@@ -1,7 +1,5 @@
 REST Client for Yii 2 (ActiveRecord-like model)
 ===============================================
-[![Latest Stable Version](https://poser.pugx.org/chsergey/yii2-rest-client/v/stable)](https://packagist.org/packages/chsergey/yii2-rest-client) [![Total Downloads](https://poser.pugx.org/chsergey/yii2-rest-client/downloads)](https://packagist.org/packages/chsergey/yii2-rest-client) [![Latest Unstable Version](https://poser.pugx.org/chsergey/yii2-rest-client/v/unstable)](https://packagist.org/packages/chsergey/yii2-rest-client) [![License](https://poser.pugx.org/chsergey/yii2-rest-client/license)](https://packagist.org/packages/chsergey/yii2-rest-client)
-[![Code Climate](https://codeclimate.com/github/chsergey/yii2-rest-client/badges/gpa.svg)](https://codeclimate.com/github/chsergey/yii2-rest-client)
 
 This extension provides an interface to work with RESTful API via ActiveRecord-like model in Yii 2.
 
@@ -16,13 +14,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist chsergey/yii2-rest-client:0.1.1
+php composer.phar require --prefer-dist zaioll/yii2-active-resource:0.1.2
 ```
 
 or add
 
 ```json
-"chsergey/yii2-rest-client": "0.1.1"
+"zaioll/yii2-active-resource": "0.1.2"
 ```
 
 to the `require` section of your composer.json.
