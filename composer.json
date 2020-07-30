@@ -1,6 +1,5 @@
 {
     "name": "zaioll/yii2-active-resource",
-    "version": "0.1.1",
     "description": "REST client (AR-like model) for Yii Framework 2.0",
     "keywords": ["yii2", "rest", "client", "model", "active record"],
     "license": "MIT",
