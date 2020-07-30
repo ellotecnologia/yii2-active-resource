@@ -89,7 +89,7 @@ abstract class Model extends \yii\base\Model implements ModelInterface
      */
     public static function primaryKey()
     {
-        return [static::$primaryKey];
+        return static::$primaryKey;
     }
 
     /**
