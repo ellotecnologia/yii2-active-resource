@@ -10,60 +10,63 @@ use yii\data\BaseDataProvider;
  *
  * @package Zaioll\ActiveResource
  */
-class DataProvider extends BaseDataProvider {
-	/**
-	 * @var Query
-	 */
-	public $query;
+class DataProvider extends BaseDataProvider
+{
+    /**
+     * @var Query
+     */
+    public $query;
 
 
-	/**
-	 * Prepares the data models that will be made available in the current page.
-	 * @return array the available data models
-	 * @throws InvalidConfigException
-	 */
-	protected function prepareModels() {
-		if(!$this->query instanceof QueryInterface) {
-			throw new InvalidConfigException(
-				'The "query" property must be an instance of a class that implements the '.
-				'Zaioll\ActiveResource\QueryInterface or its subclasses.'
-			);
-		}
+    /**
+     * Prepares the data models that will be made available in the current page.
+     * @return array the available data models
+     * @throws InvalidConfigException
+     */
+    protected function prepareModels()
+    {
+        if (!$this->query instanceof QueryInterface) {
+            throw new InvalidConfigException(
+                'The "query" property must be an instance of a class that implements the '.
+                'Zaioll\ActiveResource\QueryInterface or its subclasses.'
+            );
+        }
 
-		$query = clone $this->query;
+        $query = clone $this->query;
 
-		$this->setPagination([
-			'pageSizeLimit' => [1, 1000]
-		]);
+        $this->setPagination([
+            'pageSizeLimit' => [1, 1000]
+        ]);
 
-		if (($pagination = $this->getPagination()) !== false) {
-			$pagination->totalCount = $this->getTotalCount();
-			$query->limit($pagination->getLimit())
-				->offset($pagination->getOffset());
-		}
+        if (($pagination = $this->getPagination()) !== false) {
+            $pagination->totalCount = $this->getTotalCount();
+            $query->limit($pagination->getLimit())
+                ->offset($pagination->getOffset());
+        }
 
-		return $query->all();
-	}
+        return $query->all();
+    }
 
-	/**
-	 * Prepares the keys associated with the currently available data models.
-	 * @param Model[] $models the available data models
-	 * @return array the keys
-	 */
-	protected function prepareKeys($models) {
-		$keys = [];
-		foreach ($models as $model) {
-			$keys[] = $model->getPrimaryKey();
-		}
-		return $keys;
-	}
+    /**
+     * Prepares the keys associated with the currently available data models.
+     * @param Model[] $models the available data models
+     * @return array the keys
+     */
+    protected function prepareKeys($models)
+    {
+        $keys = [];
+        foreach ($models as $model) {
+            $keys[] = $model->getPrimaryKey();
+        }
+        return $keys;
+    }
 
-	/**
-	 * Returns a value indicating the total number of data models in this data provider.
-	 * @return integer total number of data models in this data provider.
-	 */
-	protected function prepareTotalCount() {
-
-		return $this->query->count();
-	}
+    /**
+     * Returns a value indicating the total number of data models in this data provider.
+     * @return integer total number of data models in this data provider.
+     */
+    protected function prepareTotalCount()
+    {
+        return $this->query->count();
+    }
 }
