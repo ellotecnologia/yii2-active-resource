@@ -35,10 +35,6 @@ class DataProvider extends BaseDataProvider
 
         $query = clone $this->query;
 
-        $this->setPagination([
-            'pageSizeLimit' => [1, 1000]
-        ]);
-
         if (($pagination = $this->getPagination()) !== false) {
             $pagination->totalCount = $this->getTotalCount();
             $query->limit($pagination->getLimit())
