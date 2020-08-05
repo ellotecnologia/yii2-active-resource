@@ -21,7 +21,6 @@ class DataProvider extends BaseDataProvider
      */
     public $query;
 
-
     /**
      * Prepares the data models that will be made available in the current page.
      * @return array the available data models
@@ -45,7 +44,8 @@ class DataProvider extends BaseDataProvider
         $query->limit($pagination->getLimit())
             ->offset($pagination->getOffset());
 
-        return $query->all();
+        $todos = $query->all();
+        return $todos;
     }
 
     /**
