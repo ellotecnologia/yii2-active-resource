@@ -402,9 +402,10 @@ class Query extends Component implements QueryInterface
         $modelClass = $this->modelClass;
         $models = [];
         foreach ($elements as $element) {
-            $model = $modelClass::instantiate()->setAttributes($this->_getProps($element));
-            $models[] = $model->setId(
-                $model->getAttribute($modelClass::primaryKey()[0])
+            $attributes = $this->_getProps($element);
+            $model      = $modelClass::instantiate()->setAttributes($attributes);
+            $models[]   = $model->setId(
+                $model->getAttribute($modelClass::primaryKey())
             );
         }
 
