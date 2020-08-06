@@ -9,7 +9,12 @@ class Pagination extends \yii\data\Pagination
      */
     public function getOffset()
     {
-        $page = $this->getPage();
-        return $page;
+        $pageSize = $this->getPageSize();
+        if ($pageSize < 0) {
+            return 0;
+        }
+        //$offset = $this->getPage() * $pageSize;
+        $offset = $this->getPage() + 1;
+        return $offset;
     }
 }
