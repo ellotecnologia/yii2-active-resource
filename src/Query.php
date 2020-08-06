@@ -366,30 +366,38 @@ class Query extends Component implements QueryInterface
 
         // array of objects or arrays - probably resource collection
         if (is_array($data)) {
-            $models = $this->_createModels($data);
+            return $this->_createModels($data);
         }
         // collection with data envelope or single element
         if (is_object($data)) {
             if ($asCollection) {
-                if ($this->_collectionEnvelope) {
-                    $elements = isset($data->{$this->_collectionEnvelope})
-                        ? $data->{$this->_collectionEnvelope}
-                        : [];
-                } else {
-                    $elements = [];
-                }
-                if ($this->_paginationEnvelope && isset($data->{$this->_paginationEnvelope})) {
-                    $this->_setPagination(
-                        $this->_getProps($data->{$this->_paginationEnvelope})
-                    );
-                }
-                $models = $this->_createModels($elements);
-            } else {
-                $models = $this->_createModels([$data])[0];
+                return $this->_populateAsCollection($data);
             }
+            $models = $this->_createModels([$data])[0];
         }
 
         return $models;
+    }
+
+    /**
+     * @param Model $data
+     *
+     * @return Model[]
+     */
+    protected function _populateAsCollection($data)
+    {
+        $elements = [];
+        if ($this->_collectionEnvelope) {
+            $elements = isset($data->{$this->_collectionEnvelope})
+                ? $data->{$this->_collectionEnvelope}
+                : [];
+        }
+        if ($this->_paginationEnvelope && isset($data->{$this->_paginationEnvelope})) {
+            $this->_setPagination(
+                $this->_getProps($data->{$this->_paginationEnvelope})
+            );
+        }
+        return $this->_createModels($elements);
     }
 
     /**
