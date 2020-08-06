@@ -2,18 +2,21 @@
 
 namespace Zaioll\ActiveResource;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\RequestException;
-use Psr\Http\Message\ResponseInterface;
-use yii\base\Component;
-use yii\base\InvalidCallException;
-use yii\base\InvalidParamException;
-use yii\web\HttpException;
 use yii\web\ServerErrorHttpException;
+use yii\web\HttpException;
+use yii\base\InvalidParamException;
+use yii\base\InvalidCallException;
+use yii\base\Component;
+use Zaioll\ActiveResource\http\client\ClientInterface;
+use Zaioll\ActiveResource\UrlHelper;
 use Zaioll\ActiveResource\QueryInterface;
 use Zaioll\ActiveResource\Model;
+use Yii;
+use Psr\Http\Message\ResponseInterface;
+use InvalidArgumentException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\ClientException;
 
 /**
  * Class Query
@@ -59,7 +62,7 @@ class Query extends Component implements QueryInterface
      * HTTP client that performs HTTP requests
      * @var object
      */
-    public $httpClient;
+    protected $_httpClient;
     /**
      * Configuration to be supplied to the HTTP client
      * @var array
@@ -155,18 +158,47 @@ class Query extends Component implements QueryInterface
         $this->offsetKey = $modelClass::$offsetKey;
         $this->limitKey = $modelClass::$limitKey;
 
+        if (! array_key_exists('httpClient', $config)) {
+            throw new InvalidArgumentException('Falta o cliente HTTP');
+        }
+        if (! ($config['httpClient'] instanceof ClientInterface)) {
+            throw new InvalidArgumentException('O cliente HTTP deve ser do tipo: ' . ClienteInterface::class);
+        }
+        /*
         $httpClientConfig = array_merge(
             [
-                /* @link http://docs.guzzlephp.org/en/latest/quickstart.html */
+                ///* @link http://docs.guzzlephp.org/en/latest/quickstart.html
                 'base_uri' => $this->_getUrl('api'),
-                /* @link http://docs.guzzlephp.org/en/latest/request-options.html#headers */
+                ///* @link http://docs.guzzlephp.org/en/latest/request-options.html#headers
                 'headers' => $this->_getRequestHeaders(),
             ],
             $this->httpClientExtraConfig
         );
         $this->httpClient = new Client($httpClientConfig);
+        */
+        //$headers = $this->_getRequestHeaders();
 
         parent::__construct($config);
+    }
+
+    /**
+     * @param ClientInterface $httpClient
+     *
+     * @return self
+     */
+    protected function setHttpClient(ClientInterface $httpClient)
+    {
+        $this->httpClient = $httpClient;
+
+        return $this;
+    }
+
+    /**
+     * @return ClientInterface
+     */
+    public function getHttpClient()
+    {
+        return $this->httpClient;
     }
 
     /**
@@ -178,7 +210,7 @@ class Query extends Component implements QueryInterface
         return $this->_populate(
             $this->_request(
                 'get',
-                $this->_getUrl('collection'),
+                $this->_getUrl($this->modelClass, 'collection'),
                 [
                     'query' => $this->_buildQueryParams()
                 ]
@@ -205,7 +237,7 @@ class Query extends Component implements QueryInterface
         }
 
         // try to get count by HEAD request
-        $count = $this->_request('head', $this->_getUrl('collection'), ['query' => $this->_buildQueryParams()])
+        $count = $this->_request('head', $this->_getUrl($this->modelClass, 'collection'), ['query' => $this->_buildQueryParams()])
             ->getHeaderLine($this->responseHeaders['totalCount']);
 
         // REST server not allow HEAD query and X-Total header is empty
@@ -231,7 +263,7 @@ class Query extends Component implements QueryInterface
         $model = $this->_populate(
             $this->_request(
                 'get',
-                $this->_getUrl('element', $id),
+                $this->_getUrl($this->modelClass, 'element', $id),
                 [
                     'query' => $this->_buildQueryParams()
                 ]
@@ -249,7 +281,7 @@ class Query extends Component implements QueryInterface
     public function create(Model $model)
     {
         return $this->_populate(
-            $this->_request('post', $this->_getUrl('collection'), [
+            $this->_request('post', $this->_getUrl($this->modelClass, 'collection'), [
                 'json' => $model->getAttributes()
             ]),
             false
@@ -264,7 +296,7 @@ class Query extends Component implements QueryInterface
     public function update(Model $model)
     {
         return $this->_populate(
-            $this->_request('put', $this->_getUrl('element', $model->getPrimaryKey()), [
+            $this->_request('put', $this->_getUrl($this->modelClass, 'element', $model->getPrimaryKey()), [
                 'json' => $model->getAttributes()
             ]),
             false
@@ -282,6 +314,8 @@ class Query extends Component implements QueryInterface
 
     /**
      * @inheritdoc
+     *
+     * @see http://docs.guzzlephp.org/en/stable/quickstart.html#query-string-parameters
      */
     public function where(array $conditions)
     {
@@ -315,8 +349,9 @@ class Query extends Component implements QueryInterface
      * @return ResponseInterface
      * @throws ServerErrorHttpException
      */
-    private function _request($method, $url, array $options)
+    private function _request($method, $url, array $options, $debug = YII_ENV_DEV)
     {
+        $options['debug'] = $debug;
         try {
             $response = $this->httpClient->{$method}($url, $options);
         } catch (ClientException $e) {
@@ -435,7 +470,7 @@ class Query extends Component implements QueryInterface
             if (false !== stripos($contentType, $this->dataType)
                 && isset($this->unserializers[$this->dataType])) {
                 /** @var UnserializerInterface $unserializer */
-                $unserializer = \Yii::createObject($this->unserializers[$this->dataType]);
+                $unserializer = Yii::createObject($this->unserializers[$this->dataType]);
                 if ($unserializer instanceof UnserializerInterface) {
                     return $unserializer->unserialize($body, false);
                 }
@@ -504,7 +539,7 @@ class Query extends Component implements QueryInterface
      * Get headers for request
      * @return array
      */
-    private function _getRequestHeaders()
+    public function getRequestHeaders()
     {
         return $this->requestHeaders ?: ['Accept' => $this->dataType];
     }
@@ -516,24 +551,26 @@ class Query extends Component implements QueryInterface
      * @param string $id
      * @return string
      */
-    private function _getUrl($type = 'base', $id = 'null')
+    private static function _getUrl($modelClass, $type = 'base', $id = 'null')
     {
-        $modelClass = $this->modelClass;
+        return UrlHelper::getUrl($modelClass, $type, $id);
+        /*
         $collection = $modelClass::getResourceName();
 
         switch ($type) {
             case 'api':
-                return $this->_trailingSlash($modelClass::getApiUrl());
+                return self::_trailingSlash($modelClass::getApiUrl());
                 break;
             case 'collection':
-                return $this->_trailingSlash($collection, false);
+                return self::_trailingSlash($collection, false);
                 break;
             case 'element':
-                return $this->_trailingSlash($collection) . $this->_trailingSlash($id, false);
+                return self::_trailingSlash($collection) . self::_trailingSlash($id, false);
                 break;
         }
 
         return '';
+        */
     }
 
     /**
@@ -544,11 +581,14 @@ class Query extends Component implements QueryInterface
      * @param bool $add
      * @return string
      */
-    private function _trailingSlash($string, $add = true)
+    public static function _trailingSlash($string, $add = true)
     {
+        return UrlHelper::trailingSlash($string, $add);
+        /*
         return substr($string, -1) === '/'
             ? ($add ? $string : substr($string, 0, strlen($string) - 1))
             : ($add ? $string . '/' : $string);
+        */
     }
 
     /**

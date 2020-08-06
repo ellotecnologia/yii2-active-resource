@@ -2,8 +2,12 @@
 
 namespace Zaioll\ActiveResource;
 
-use Zaioll\ActiveResource\ModelInterface;
+use GuzzleHttp\Client;
+use Zaioll\ActiveResource\UrlHelper;
 use Zaioll\ActiveResource\Query;
+use Zaioll\ActiveResource\ModelInterface;
+use Yii;
+use Zaioll\ActiveResource\http\client\Cliente;
 
 /**
  * Class Model
@@ -116,7 +120,22 @@ abstract class Model extends \yii\base\Model implements ModelInterface
      */
     public static function find()
     {
-        return \Yii::createObject(Query::class, [get_called_class()]);
+        $calledClass = get_called_class();
+        $client = Yii::$container->get(Client::class, [], [
+            'baseUrl' => UrlHelper::getUrl($calledClass, 'api'),
+            'headers' => ['Accept' => Query::JSON_TYPE],
+        ]);
+
+        $query = Yii::createObject(
+            Query::class,
+            [
+                $calledClass,
+                [
+                    'httpClient' => new Cliente($client),
+                ],
+            ]
+        );
+        return $query;
     }
 
     /**
@@ -284,4 +303,5 @@ abstract class Model extends \yii\base\Model implements ModelInterface
         }
         parent::__set($name, $value);
     }
+
 }
