@@ -37,12 +37,13 @@ class DataProvider extends BaseDataProvider
         }
 
         $query = clone $this->query;
-
-        if (($pagination = $this->getPagination()) !== false) {
-            $pagination->totalCount = $this->getTotalCount();
-            $query->limit($pagination->getLimit())
-                ->offset($pagination->getOffset());
+        $pagination = $this->getPagination();
+        if ($pagination === false) {
+            return $query->all();
         }
+        $pagination->totalCount = $this->getTotalCount();
+        $query->limit($pagination->getLimit())
+            ->offset($pagination->getOffset());
 
         return $query->all();
     }
