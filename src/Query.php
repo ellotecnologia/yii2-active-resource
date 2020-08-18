@@ -307,6 +307,15 @@ class Query extends Component implements QueryInterface
         return $this;
     }
 
+    public function delete(Model $model)
+    {
+        $response = $this->_request('delete', $this->_getUrl('element', $model->getPrimaryKey()), [
+            'json' => $model->getAttributes()
+        ]);
+
+        return $response->getStatusCode() === 204;
+    }
+
     /**
      * HTTP request
      * @param string $method

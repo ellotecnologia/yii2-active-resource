@@ -154,6 +154,14 @@ abstract class Model extends \yii\base\Model implements ModelInterface
     }
 
     /**
+     * @return
+     */
+    public function delete()
+    {
+        return static::find()->delete($this);
+    }
+
+    /**
      * @inheritdoc
      */
     public function save()
