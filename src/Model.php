@@ -167,7 +167,11 @@ abstract class Model extends \yii\base\Model implements ModelInterface
     public function save()
     {
         if (static::SCENARIO_CREATE === $this->getScenario()) {
-            return static::find()->create($this);
+            $model = static::find()->create($this);
+            if ($model->hasErrors()) {
+                return false;
+            }
+            return true;
         }
 
         if (static::SCENARIO_UPDATE === $this->getScenario()) {

@@ -248,12 +248,11 @@ class Query extends Component implements QueryInterface
      */
     public function create(Model $model)
     {
-        return $this->_populate(
-            $this->_request('post', $this->_getUrl('collection'), [
-                'json' => $model->getAttributes()
-            ]),
-            false
-        );
+        $response = $this->_request('post', $this->_getUrl('element'), [
+            'json' => $model->getAttributes()
+        ]);
+
+        return $this->_populate($response, false, $model);
     }
 
     /**
@@ -358,7 +357,7 @@ class Query extends Component implements QueryInterface
      * @return $this|Model|array|void
      * @throws HttpException
      */
-    protected function _populate(ResponseInterface $response, $asCollection = true)
+    protected function _populate(ResponseInterface $response, $asCollection = true, Model $model = null)
     {
         $models = [];
         $statusCode = $response->getStatusCode();
@@ -366,6 +365,10 @@ class Query extends Component implements QueryInterface
 
         // errors
         if ($statusCode >= 400) {
+            if ($statusCode === 422 && count($data) === 1 && isset($data[0])) {
+                $model->addError($data[0]->field, $data[0]->message);
+                return $model;
+            }
             throw new HttpException(
                 $statusCode,
                 is_string($data) ? $data : $data->message,
@@ -525,7 +528,7 @@ class Query extends Component implements QueryInterface
      * @param string $id
      * @return string
      */
-    private function _getUrl($type = 'base', $id = 'null')
+    private function _getUrl($type = 'base', $id = null)
     {
         $modelClass = $this->modelClass;
         $collection = $modelClass::getResourceName();
@@ -538,6 +541,9 @@ class Query extends Component implements QueryInterface
                 return $this->_trailingSlash($collection, false);
                 break;
             case 'element':
+                if (is_null($id)) {
+                    return $this->_trailingSlash($collection, false);
+                }
                 return $this->_trailingSlash($collection) . $this->_trailingSlash($id, false);
                 break;
         }
